@@ -61,7 +61,7 @@ public class DetectorGround : Detector
             if (data.GroundRigidbody != null)
             {
                 data.GroundVelocity = raycastHit2D.rigidbody.linearVelocity;
-                Debug.Log("GV : "+ raycastHit2D.rigidbody.name + " : " + raycastHit2D.rigidbody.linearVelocityX);
+                //Debug.Log("GV : "+ raycastHit2D.rigidbody.name + " : " + raycastHit2D.rigidbody.linearVelocityX);
             }
 
             //data.PlatformEffector2D = raycastHit.collider.GetComponent<PlatformEffector2D>();

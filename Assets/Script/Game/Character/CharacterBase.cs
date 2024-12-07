@@ -24,8 +24,8 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
         {
             _velocity = value;
             if (Mathf.Approximately(value.x, 0)) return;
-            if (_velocity.x > 0.01) Direction = Character2DDirection.Right;
-            else if(_velocity.x < -0.01) Direction = Character2DDirection.Left;
+            if (_velocity.x > 0.1) Direction = Character2DDirection.Right;
+            else if(_velocity.x < -0.1) Direction = Character2DDirection.Left;
         }
     }
     public float Horizontal { get; set; }
@@ -54,6 +54,7 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
     }
     public int Health { get; private set; }
     [SerializeField] public int MaxHealth { get; } = 100;
+    [SerializeField] private ClipSet _clipSet;
     public List<Detector> DetectorList { get; set; } = new List<Detector>();
 
     public event Action OnDead;
@@ -101,10 +102,10 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
     protected virtual void FixedUpdate()
     {
          if (Health == 0) return;
-        Velocity = Rigidbody.linearVelocity;
+        _velocity = Rigidbody.linearVelocity;
         if (_detectorData.GroundRigidbody != null)
         {
-            Velocity -= _detectorData.GroundVelocity;
+            _velocity -= _detectorData.GroundVelocity;
         }
 
         UpdateDetector();
@@ -175,7 +176,8 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
 
     public void UpdateAnimation()
     {
-        //_animator?.SetTrigger(_stateMachine?.CurrentState.AnimationId);
+        string id = _stateMachine?.CurrentState.AnimationId;
+        _animator?.SetTrigger(id);
     }
 
     private void SetRigidbodyVelocity()
@@ -185,7 +187,9 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
         if (_detectorData.GroundRigidbody != null)
         {
             Vector2 lhs = (Vector2)Vector3.Cross(_detectorData.GroundNoraml, Vector3.forward);
-            vector += lhs * Vector2.Dot(lhs, Velocity) + _detectorData.GroundNoraml * Vector2.Dot(_detectorData.GroundNoraml, Velocity);
+            vector += lhs * Vector2.Dot(lhs, Velocity);
+            //vector += _detectorData.GroundNoraml * Vector2.Dot(_detectorData.GroundNoraml, Velocity);
+            //Debug.Log("??:" + _detectorData.GroundNoraml * Vector2.Dot(_detectorData.GroundNoraml, Velocity));
         }
         if (_detectorData.GroundRigidbody != null)
         {
