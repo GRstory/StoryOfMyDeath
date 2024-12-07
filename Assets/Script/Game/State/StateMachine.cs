@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StateMachine
@@ -18,6 +19,7 @@ public class StateMachine
         data.GenerateStateLink();
         _states = data.States;
         _stateLinks = data.StateLinks;
+        CurrentState = _states[0];
     }
 
     public void Update(ICharacter2D character)
@@ -53,8 +55,8 @@ public class StateMachineData
 
     public void GenerateStateLink()
     {
-        _linkList.Add(new StateLink2DGeneric<StateMoving2D, StateJump>((IEnumerable)_states, new Func<StateMoving2D, StateJump, ICharacter2D, bool>((oldState, newState, condition) => true)));
-        _linkList.Add(new StateLink2DGeneric<StateJump, StateMoving2D>((IEnumerable)_states, new Func<StateJump, StateMoving2D, ICharacter2D, bool>((oldState, newState, condition) => true)));
+        _linkList.Add(new StateLink2DGeneric<StateMoving2D, StateJump>((IEnumerable)_states, new Func<StateMoving2D, StateJump, ICharacter2D, bool>((oldState, newState, condition) => false)));
+        _linkList.Add(new StateLink2DGeneric<StateJump, StateMoving2D>((IEnumerable)_states, new Func<StateJump, StateMoving2D, ICharacter2D, bool>((oldState, newState, condition) => false)));
     }
 
     public List<StateLink2D> GetStateLinkList()

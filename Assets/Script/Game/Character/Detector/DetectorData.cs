@@ -7,11 +7,12 @@ public class DetectorData
     public Bounds Bound;
     public bool IsGround;
     public bool CanStand;
-    public bool IsObstacleForward;
+    public bool IsBlockedForward;
     public Collider2D GroundCollider;
     public Rigidbody2D GroundRigidbody;
-    public PlatformEffector2D PlatformEffector2D;
+    public Vector2 GroundNoraml;
     public Vector2 GroundVelocity;
+    public PlatformEffector2D PlatformEffector2D;
     public int CharacterDirection;
 
     public static DetectorData DeepCopy(DetectorData prevData)
@@ -21,11 +22,12 @@ public class DetectorData
             Bound = prevData.Bound,
             IsGround = prevData.IsGround,
             CanStand = prevData.CanStand,
-            IsObstacleForward = prevData.IsObstacleForward,
+            IsBlockedForward = prevData.IsBlockedForward,
             GroundCollider = prevData.GroundCollider,
             GroundRigidbody = prevData.GroundRigidbody,
-            PlatformEffector2D = prevData.PlatformEffector2D,
+            GroundNoraml = prevData.GroundNoraml,
             GroundVelocity = prevData.GroundVelocity,
+            PlatformEffector2D = prevData.PlatformEffector2D,
             CharacterDirection = prevData.CharacterDirection,
         };
     }

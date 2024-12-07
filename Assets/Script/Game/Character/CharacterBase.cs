@@ -1,20 +1,57 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, IDetectorController
 {
-    public Rigidbody2D Rigidbody { get; set; }
-    public CapsuleCollider2D Collider { get; set; }
+    private Rigidbody2D _rigidbody;
+    private CapsuleCollider2D _capsuleCollider;
+    private SpriteRenderer _spriteRenderer;
+    private Vector2 _velocity;
+    [SerializeField] private Character2DDirection _direction;
+
+    public Rigidbody2D Rigidbody { get => _rigidbody; set => _rigidbody = value; }
+    public CapsuleCollider2D Collider { get => _capsuleCollider; set => _capsuleCollider = value; }
     public Bounds InitBound { get; set; }
     public Vector2 Position { get; set; }
-    public Vector2 Velocity { get; set; }
+    public Vector2 Velocity
+    {
+        get => _velocity;
+        set
+        {
+            _velocity = value;
+            if (Mathf.Approximately(value.x, 0)) return;
+            if (_velocity.x > 0.01) Direction = Character2DDirection.Right;
+            else if(_velocity.x < -0.01) Direction = Character2DDirection.Left;
+        }
+    }
+    public float Horizontal { get; set; }
     public Vector2 GroundNormal { get; set; }
     public Quaternion GroundZAngle { get; set; }
     public float VelocityX { get; set; }
     public float VelocityY { get; set; }
-    public Character2DDirection Direction { get; set; }
+    public Character2DDirection Direction
+    {
+        get => _direction;
+        set
+        {
+            switch (value)
+            {
+                case Character2DDirection.Left:
+                    _spriteRenderer.flipX = true;
+                    break;
+                case Character2DDirection.Right:
+                    _spriteRenderer.flipX = false;
+                    break;
+                case Character2DDirection.None:
+                    break;
+            }
+            _direction = value;
+        }
+    }
     public int Health { get; private set; }
     [SerializeField] public int MaxHealth { get; } = 100;
     public List<Detector> DetectorList { get; set; } = new List<Detector>();
@@ -24,28 +61,30 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
     private Animator _animator;
     private StateMachine _stateMachine;
     private StateMachineData _stateMachineData;
+
     [SerializeField] private DetectorData _detectorData;
     [SerializeField] private DetectorData _prevData;
-
 
     [SerializeField] private float _colliderYSize = 1.8f;
     [SerializeField] private float _colliderXSize = 0.5f;
 
     private void Awake()
     {
-        Rigidbody = GetComponent<Rigidbody2D>();
-        Collider = GetComponent<CapsuleCollider2D>();
+        _rigidbody = GetComponent<Rigidbody2D>();
+        _capsuleCollider = GetComponent<CapsuleCollider2D>();
         _animator = GetComponent<Animator>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         InitBound = new Bounds((Vector3)Collider.offset, (Vector3)Collider.size);
 
         _detectorData = new DetectorData();
-        _prevData = _detectorData.DeepCopy(_detectorData);
+        _prevData = DetectorData.DeepCopy(_detectorData);
         SetCollider();
 
         _detectorData.Bound = InitBound;
         _detectorData.IsGround = true;
         _detectorData.CanStand = true;
-        _detectorData.IsObstacleForward = true;
+        _detectorData.IsBlockedForward = true;
+        Direction = Character2DDirection.Right;
 
         _stateMachineData = new StateMachineData();
         _stateMachine = new StateMachine(_stateMachineData, this);
@@ -54,7 +93,9 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
         RecoverHealth();
 
         Detector groundDetector = new DetectorGround();
+        Detector forwardDetector = new DetectorForward();
         DetectorList.Add(groundDetector);
+        DetectorList.Add(forwardDetector);
     }
 
     protected virtual void FixedUpdate()
@@ -69,6 +110,7 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
         UpdateDetector();
         UpdateStateMachine();
         UpdateAnimation();
+        SetRigidbodyVelocity();
     }
 
     public void Die(Death deathType)
@@ -93,10 +135,11 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
 
     public void UpdateDetector()
     {
-        _prevData = _detectorData.DeepCopy(_detectorData);
+        _prevData = DetectorData.DeepCopy(_detectorData);
         _detectorData = new DetectorData();
 
         _detectorData.Bound = new Bounds(transform.TransformPoint(Collider.offset), Collider.size);
+        _detectorData.CharacterDirection = _direction == Character2DDirection.Left ? -1 : 1;
         foreach (Detector detector in DetectorList)
         {
             detector.Update(_detectorData);
@@ -114,8 +157,40 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
         Collider.offset = new Vector2(Collider.offset.x, _colliderYSize / 2);
     }
 
+    public void UpdateDirection()
+    {
+        switch (Direction)
+        {
+            case Character2DDirection.Left:
+                _spriteRenderer.flipX = true;
+                break;
+            case Character2DDirection.Right:
+                _spriteRenderer.flipX = false;
+                break;
+            case Character2DDirection.None:
+                break;
+        }
+
+    }
+
     public void UpdateAnimation()
     {
         //_animator?.SetTrigger(_stateMachine?.CurrentState.AnimationId);
+    }
+
+    private void SetRigidbodyVelocity()
+    {
+        Vector2 vector = Velocity;
+
+        if (_detectorData.GroundRigidbody != null)
+        {
+            Vector2 lhs = (Vector2)Vector3.Cross(_detectorData.GroundNoraml, Vector3.forward);
+            vector += lhs * Vector2.Dot(lhs, Velocity) + _detectorData.GroundNoraml * Vector2.Dot(_detectorData.GroundNoraml, Velocity);
+        }
+        if (_detectorData.GroundRigidbody != null)
+        {
+            vector += _detectorData.GroundVelocity;
+        }
+        _rigidbody.linearVelocity = vector;
     }
 }
