@@ -14,6 +14,6 @@ public class CharacterPlayer2D : Character2DBase
     public void OnMove(InputValue value)
     {
         Horizontal = value.Get<Vector2>().x;
-        Debug.Log(Horizontal);
+        //Debug.Log(Horizontal);
     }
 }

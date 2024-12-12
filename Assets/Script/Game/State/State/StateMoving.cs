@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public class StateMoving2D : StateBase2D
 {
-    [SerializeField] private float speed = 1.75f;
+    [SerializeField] private float speed = 2.5f;
     private float _xVelocity = 0f;
     private string _moveAnimationID = "move";
     private string _idleAnimationID = "idle";

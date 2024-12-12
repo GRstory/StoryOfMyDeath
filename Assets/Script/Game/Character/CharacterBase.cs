@@ -13,6 +13,7 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
     private Vector2 _velocity;
     [SerializeField] private Character2DDirection _direction;
 
+    [SerializeField] private GameObject _cameraTarget;
     public Rigidbody2D Rigidbody { get => _rigidbody; set => _rigidbody = value; }
     public CapsuleCollider2D Collider { get => _capsuleCollider; set => _capsuleCollider = value; }
     public Bounds InitBound { get; set; }
@@ -33,7 +34,7 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
     public Quaternion GroundZAngle { get; set; }
     public float VelocityX { get; set; }
     public float VelocityY { get; set; }
-    public Character2DDirection Direction
+    public virtual Character2DDirection Direction
     {
         get => _direction;
         set
@@ -42,9 +43,11 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
             {
                 case Character2DDirection.Left:
                     _spriteRenderer.flipX = true;
+                    if(_cameraTarget) _cameraTarget.transform.localPosition = new Vector3(-1f, 0f, 0f); 
                     break;
                 case Character2DDirection.Right:
                     _spriteRenderer.flipX = false;
+                    if (_cameraTarget) _cameraTarget.transform.localPosition = new Vector3(1f, 0f, 0f);
                     break;
                 case Character2DDirection.None:
                     break;
@@ -112,6 +115,7 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
         UpdateStateMachine();
         UpdateAnimation();
         SetRigidbodyVelocity();
+        Debug.Log(_rigidbody.linearVelocity);
     }
 
     public void Die(Death deathType)
