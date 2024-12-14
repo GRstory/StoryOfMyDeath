@@ -1,15 +1,16 @@
+using Febucci.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 
 public class DialogUIBubble : MonoBehaviour
 {
     [SerializeField] private TMP_Text _nameText;
     [SerializeField] private TMP_Text _dialogText;
+    [SerializeField] private TypewriterByWord _dialogTextWriter;
 
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private Image _tailImage;
@@ -28,15 +29,15 @@ public class DialogUIBubble : MonoBehaviour
 
     public void Active(BubbleData data)
     {
+        _dialogTextWriter.ShowText(data.Dialog);
         _nameText.text = data.Name;
-        _dialogText.text = data.Dialog;
         _nameText.color = data.Color;
-        _endImage.color = new Color(data.Color.r, data.Color.g, data.Color.b, 0.5f);
+        _endImage.color = new Color(data.Color.r, data.Color.g, data.Color.b);
 
-        transform.SetAsLastSibling();
         gameObject.SetActive(true);
 
         Resize();
+        RePosition();
     }
 
     public void Deactivate()
@@ -49,7 +50,7 @@ public class DialogUIBubble : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Resize()
+    private void Resize()
     {
         //ÅØ½ºÆ® RectTransform »çÀÌÁî
         Vector2 vector = new Vector2(_maxWidth, _dialogText.preferredHeight);
@@ -79,7 +80,7 @@ public class DialogUIBubble : MonoBehaviour
         _rectTransform.sizeDelta = vector2;
     }
 
-    public void RePosition()
+    private void RePosition()
     {
         Vector3 worldPos = _go.transform.position;
         if (_go.TryGetComponent<Collider2D>(out Collider2D collider))
@@ -91,7 +92,8 @@ public class DialogUIBubble : MonoBehaviour
         worldPos.y += _worldYMargin;
 
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPos);
-        
+        Vector3 rawScreenPsition = screenPosition;
+
         screenPosition.x = Mathf.Clamp(screenPosition.x, ((_rectTransform.rect.width / 2) + _windowMargin.x), Screen.width - _rectTransform.rect.width / 2 - _windowMargin.x);
         screenPosition.y = Mathf.Clamp(screenPosition.y, ((_rectTransform.rect.height / 2) + _windowMargin.y), Screen.height - _rectTransform.rect.height / 2 - _windowMargin.y);
 
@@ -103,5 +105,41 @@ public class DialogUIBubble : MonoBehaviour
         );
 
         _rectTransform.localPosition = localPosition;
+
+        SetTail(rawScreenPsition);
+    }
+
+    private void SetTail(Vector3 screenPosition)
+    {
+        _tailImage.gameObject.SetActive(true);
+
+        float minX = _backgroundImage.rectTransform.anchoredPosition.x - (_backgroundImage.rectTransform.sizeDelta.x * 0.5f) + _textMargin.x * 0.5f;
+        float maxX = _backgroundImage.rectTransform.anchoredPosition.x + (_backgroundImage.rectTransform.sizeDelta.x * 0.5f) - _textMargin.x * 0.5f;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _canvasTransform,
+            screenPosition,
+            null,
+            out Vector2 localPosition
+        );
+
+        if (localPosition.x < minX || localPosition.x > maxX)
+        {
+            _tailImage.gameObject.SetActive(false);
+            return;
+        }
+
+        float positionX = Mathf.Clamp(localPosition.x, minX, maxX);
+        _tailImage.rectTransform.localPosition = new Vector3(positionX, _backgroundImage.rectTransform.localPosition.y - 166.66666f, 0);
+    }
+
+    public void Test()
+    {
+        BubbleData bubbleData = new BubbleData();
+        bubbleData.Dialog = "´Ù¶÷Áã Çå ÃÂ¹ÙÄû¿¡ Å¸°íÆÄ, µ¿³è ±¸¸§ Æ´»õ·Î ÆÛÁö´Â ÇÞºû, µ¿Æ² ³è ÇÞºû Æ÷°³Áü";
+        bubbleData.Name = "³ª¾ß ³ª";
+        bubbleData.Color = Color.red;
+
+        Active(bubbleData);
     }
 }
