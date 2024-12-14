@@ -115,7 +115,7 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
         UpdateStateMachine();
         UpdateAnimation();
         SetRigidbodyVelocity();
-        Debug.Log(_rigidbody.linearVelocity);
+        //Debug.Log(_rigidbody.linearVelocity);
     }
 
     public void Die(Death deathType)
