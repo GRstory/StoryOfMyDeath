@@ -6,7 +6,7 @@ public class StateJump : StateBase2D
 {
     [SerializeField] private float _jumpForce = 4f;
 
-    public override void Start(ICharacter2D character)
+    public override void Start(ICharacterMovement character)
     {
         character.VelocityY = _jumpForce;
     }

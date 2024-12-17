@@ -5,8 +5,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, IDetectorController
+public abstract class CharacterBase : MonoBehaviour, ICharacter, ICharacterMovement, IHealth, IDetectorController
 {
+    [SerializeField] private string _id;
+    [SerializeField] private Color _dialogColor;
     private Rigidbody2D _rigidbody;
     private CapsuleCollider2D _capsuleCollider;
     private SpriteRenderer _spriteRenderer;
@@ -14,6 +16,8 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
     [SerializeField] private Character2DDirection _direction;
 
     [SerializeField] private GameObject _cameraTarget;
+    public string CharacterId { get => _id; }
+    public Color DialogColor { get => _dialogColor; }
     public Rigidbody2D Rigidbody { get => _rigidbody; set => _rigidbody = value; }
     public CapsuleCollider2D Collider { get => _capsuleCollider; set => _capsuleCollider = value; }
     public Bounds InitBound { get; set; }
@@ -60,6 +64,8 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
     [SerializeField] private ClipSet _clipSet;
     public List<Detector> DetectorList { get; set; } = new List<Detector>();
 
+    
+
     public event Action OnDead;
 
     private Animator _animator;
@@ -74,6 +80,8 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
 
     private void Awake()
     {
+        NPCManager.RegisterNPC(this, gameObject);
+
         _rigidbody = GetComponent<Rigidbody2D>();
         _capsuleCollider = GetComponent<CapsuleCollider2D>();
         _animator = GetComponent<Animator>();
@@ -115,7 +123,6 @@ public abstract class Character2DBase : MonoBehaviour, ICharacter2D, IHealth, ID
         UpdateStateMachine();
         UpdateAnimation();
         SetRigidbodyVelocity();
-        //Debug.Log(_rigidbody.linearVelocity);
     }
 
     public void Die(Death deathType)

@@ -18,7 +18,7 @@ public class StateMoving2D : StateBase2D
     }
 
 
-    public override void Update(ICharacter2D character2D)
+    public override void Update(ICharacterMovement character2D)
     {
         float y = Vector2.Dot(character2D.GroundNormal, character2D.Velocity);
         character2D.Velocity = (Vector2)(character2D.GroundZAngle * new Vector3(character2D.Horizontal * speed, y, 0f));

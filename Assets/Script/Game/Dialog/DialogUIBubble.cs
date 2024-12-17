@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
-public class DialogUIBubble : MonoBehaviour
+public class DialogUIBubble : SingletonMonobehavior<DialogUIBubble>
 {
     [SerializeField] private TMP_Text _nameText;
     [SerializeField] private TMP_Text _dialogText;
-    [SerializeField] private TypewriterByWord _dialogTextWriter;
+    [SerializeField] public TypewriterByWord _dialogTextWriter;
 
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private Image _tailImage;
@@ -25,29 +26,45 @@ public class DialogUIBubble : MonoBehaviour
     [SerializeField] private RectTransform _textTransform;
     [SerializeField] private RectTransform _rectTransform;
 
-    [SerializeField] private GameObject _go;
+    private bool _isFinish = true;
+    private Coroutine _finishTypingCoroutine;
 
-    public void Active(BubbleData data)
+    public PlayableDirector CurrentDirector;
+
+    protected override void Awake()
     {
+        base.Awake();
+        _dialogTextWriter.onTextShowed.AddListener(OnTypingFinish);
+    }
+
+    public void Active(DialogData data, string id)
+    {
+        StopAllCoroutines();
+        _isFinish = false;
+        gameObject.SetActive(true);
+
         _dialogTextWriter.ShowText(data.Dialog);
         _nameText.text = data.Name;
         _nameText.color = data.Color;
         _endImage.color = new Color(data.Color.r, data.Color.g, data.Color.b);
 
-        gameObject.SetActive(true);
-
         Resize();
-        RePosition();
+        RePosition(id);
     }
 
     public void Deactivate()
     {
+        StopAllCoroutines();
+        _isFinish = false;
+
         _nameText.text = "";
         _dialogText.text = "";
         _nameText.color = Color.black;
         _endImage.color = new Color(0f, 0f, 0f, 0.5f);
 
         gameObject.SetActive(false);
+        _tailImage.gameObject.SetActive(false);
+        _endImage.gameObject.SetActive(false);
     }
 
     private void Resize()
@@ -80,10 +97,13 @@ public class DialogUIBubble : MonoBehaviour
         _rectTransform.sizeDelta = vector2;
     }
 
-    private void RePosition()
+    private void RePosition(string id)
     {
-        Vector3 worldPos = _go.transform.position;
-        if (_go.TryGetComponent<Collider2D>(out Collider2D collider))
+        GameObject character = NPCManager.GetNPCObject(id).gameObject;
+        Vector3 worldPos = Vector3.zero;
+        if (character) worldPos = character.transform.position;
+
+        if (character.TryGetComponent<Collider2D>(out Collider2D collider))
         {
             float topY = collider.bounds.size.y;
             worldPos.y += topY;
@@ -130,16 +150,33 @@ public class DialogUIBubble : MonoBehaviour
         }
 
         float positionX = Mathf.Clamp(localPosition.x, minX, maxX);
+
         _tailImage.rectTransform.localPosition = new Vector3(positionX, _backgroundImage.rectTransform.localPosition.y - 166.66666f, 0);
     }
 
-    public void Test()
+    public bool IsFinish()
     {
-        BubbleData bubbleData = new BubbleData();
-        bubbleData.Dialog = "´Ù¶÷Áã Çå ÃÂ¹ÙÄû¿¡ Å¸°íÆÄ, µ¿³è ±¸¸§ Æ´»õ·Î ÆÛÁö´Â ÇÞºû, µ¿Æ² ³è ÇÞºû Æ÷°³Áü";
-        bubbleData.Name = "³ª¾ß ³ª";
-        bubbleData.Color = Color.red;
+        return _isFinish;
+    }
 
-        Active(bubbleData);
+    public void OnTypingFinish()
+    {
+        _isFinish = true;
+        if(CurrentDirector)
+        {
+
+        }
+        _finishTypingCoroutine = StartCoroutine(FinishTypingCoroutine());
+    }
+
+    private IEnumerator FinishTypingCoroutine()
+    {
+        while (true)
+        {
+            _endImage.gameObject.SetActive(true);
+            yield return new WaitForSeconds(0.3f);
+            _endImage.gameObject.SetActive(false);
+            yield return new WaitForSeconds(0.3f);
+        }
     }
 }

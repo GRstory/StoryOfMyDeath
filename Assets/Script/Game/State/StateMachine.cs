@@ -13,7 +13,7 @@ public class StateMachine
     public StateBase2D CurrentState { get; private set; }
 
     
-    public StateMachine(StateMachineData data, ICharacter2D chracter)
+    public StateMachine(StateMachineData data, ICharacterMovement chracter)
     {
         data.GenerateStateBase();
         data.GenerateStateLink();
@@ -22,7 +22,7 @@ public class StateMachine
         CurrentState = _states[0];
     }
 
-    public void Update(ICharacter2D character)
+    public void Update(ICharacterMovement character)
     {
         foreach (StateLink2D link in _stateLinks.Where<StateLink2D>((Func<StateLink2D, bool>)(a => a.OldState == CurrentState)))
         {
@@ -55,8 +55,8 @@ public class StateMachineData
 
     public void GenerateStateLink()
     {
-        _linkList.Add(new StateLink2DGeneric<StateMoving2D, StateJump>((IEnumerable)_states, new Func<StateMoving2D, StateJump, ICharacter2D, bool>((oldState, newState, condition) => false)));
-        _linkList.Add(new StateLink2DGeneric<StateJump, StateMoving2D>((IEnumerable)_states, new Func<StateJump, StateMoving2D, ICharacter2D, bool>((oldState, newState, condition) => false)));
+        _linkList.Add(new StateLink2DGeneric<StateMoving2D, StateJump>((IEnumerable)_states, new Func<StateMoving2D, StateJump, ICharacterMovement, bool>((oldState, newState, condition) => false)));
+        _linkList.Add(new StateLink2DGeneric<StateJump, StateMoving2D>((IEnumerable)_states, new Func<StateJump, StateMoving2D, ICharacterMovement, bool>((oldState, newState, condition) => false)));
     }
 
     public List<StateLink2D> GetStateLinkList()
