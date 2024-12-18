@@ -22,7 +22,8 @@ public class DialogBubbleMixerBehaviour : PlayableBehaviour
             if (!input.isStart)
             {
                 input.isStart = true;
-                DialogUIBubble.Instance.Active(input.bubbleData, input.bubbleData.Name);
+                if (input.bubbleData == null) return;
+                //DialogUIBubble.Instance.Active(input.bubbleData, input.bubbleData.Name);
             }
         }
     }

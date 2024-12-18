@@ -278,7 +278,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -200}
   m_SizeDelta: {x: 800, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &29353318
@@ -295,6 +295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _nameText: {fileID: 1509416372}
   _dialogText: {fileID: 989332112}
+  _dialogTextAnimator: {fileID: 0}
   _dialogTextWriter: {fileID: 989332115}
   _backgroundImage: {fileID: 29353319}
   _tailImage: {fileID: 1884267814}
@@ -423,7 +424,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9356909c3b11a4d2798e8590ab2a3db1, type: 2}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2034,7 +2035,6 @@ GameObject:
   - component: {fileID: 944076599}
   - component: {fileID: 944076602}
   - component: {fileID: 944076603}
-  - component: {fileID: 944076604}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2194,20 +2194,6 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &944076604
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944076598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 673db127ebcbeb1469f3f1386b9de813, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Mode: 0
-  PixelSize: 0.032
 --- !u!1 &989332110
 GameObject:
   m_ObjectHideFlags: 0
@@ -2269,8 +2255,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Dialog
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4931bba22b8ef09478c3b81d4392aa96, type: 2}
-  m_sharedMaterial: {fileID: -5866574116549655903, guid: 4931bba22b8ef09478c3b81d4392aa96, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0ece03fe7e1e7f24c9f993509d510543, type: 2}
+  m_sharedMaterial: {fileID: 1960588227114088137, guid: 0ece03fe7e1e7f24c9f993509d510543, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2300,7 +2286,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -2361,9 +2347,7 @@ MonoBehaviour:
   typewriterStartsAutomatically: 0
   animationLoop: 0
   timeScale: 0
-  _text: "\uB2E4\uB78C\uC950 \uD5CC \uCCC7\uBC14\uD034\uC5D0 \uD0C0\uACE0\uD30C,
-    \uB3D9\uB158 \uAD6C\uB984 \uD2C8\uC0C8\uB85C \uD37C\uC9C0\uB294 \uD587\uBE5B,
-    \uB3D9\uD2C0 \uB158 \uD587\uBE5B \uD3EC\uAC1C\uC9D0"
+  _text: Dialog
   useDynamicScaling: 1
   referenceFontSize: 10
   isResettingTimeOnNewText: 1
@@ -2373,8 +2357,7 @@ MonoBehaviour:
   useDefaultStyleSheet: 1
   styleSheet: {fileID: 0}
   databaseActions: {fileID: 11400000, guid: 37b190ece2a7fe84680093e244beaa47, type: 2}
-  defaultAppearancesTags:
-  - size
+  defaultAppearancesTags: []
   defaultDisappearancesTags:
   - fade
   defaultBehaviorsTags: []
@@ -2388,7 +2371,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 989332110}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb821b3a89e0240aa91c53955ccade89, type: 3}
+  m_Script: {fileID: 11500000, guid: 57a6945b90dcd0c4b81619c0d8b5c283, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   useTypeWriter: 1
@@ -2415,9 +2398,15 @@ MonoBehaviour:
   onMessage:
     m_PersistentCalls:
       m_Calls: []
-  waitForNormalWord: 0.3
-  waitForWordWithPunctuation: 0.5
-  disappearanceDelay: 0.5
+  waitForNormalChars: 0.01
+  waitLong: 0.3
+  waitMiddle: 0.2
+  avoidMultiplePunctuationWait: 0
+  waitForNewLines: 1
+  waitForLastCharacter: 1
+  useTypewriterWaitForDisappearances: 1
+  disappearanceWaitTime: 0.015
+  disappearanceSpeedMultiplier: 1
 --- !u!1 &1069101038
 GameObject:
   m_ObjectHideFlags: 0
@@ -2612,7 +2601,7 @@ Transform:
   m_GameObject: {fileID: 1107430294}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.120000005, y: 2.124, z: -5}
+  m_LocalPosition: {x: 1, y: 2, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3022,11 +3011,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 29353317}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0, y: 0.5}
+  m_SizeDelta: {x: 64, y: 64}
+  m_Pivot: {x: 1, y: 0}
 --- !u!114 &1365066811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3040,14 +3029,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b6d479d454a66024facb9ced66f6d4d1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2f4a2ef6704ee40429f68497daf286f2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3391,8 +3380,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4931bba22b8ef09478c3b81d4392aa96, type: 2}
-  m_sharedMaterial: {fileID: -5866574116549655903, guid: 4931bba22b8ef09478c3b81d4392aa96, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a95f45c9fe6a196499d00ecb35467d07, type: 2}
+  m_sharedMaterial: {fileID: -5488354236285024380, guid: a95f45c9fe6a196499d00ecb35467d07, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4192,7 +4181,7 @@ Transform:
   m_GameObject: {fileID: 1795065124}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.120000005, y: 2.124, z: -5}
+  m_LocalPosition: {x: 1, y: 2, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4287,7 +4276,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -166.6666}
+  m_AnchoredPosition: {x: 0, y: -366.6666}
   m_SizeDelta: {x: 177.77777, y: 177.77777}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1884267814
@@ -4378,7 +4367,7 @@ MonoBehaviour:
       Description: 
       Languages:
       - 
-      - "\uB0B4\uC774\uB984\uC740 Test. \uAC1C\uBC1C\uC790\uAC00 NPC \uC0C1\uD638\uC791\uC6A9
+      - "\uB0B4\uC774\uB984\uC740 Test. \uAC1C\uBC1C\uC790\uC758 NPC \uC0C1\uD638\uC791\uC6A9
         \uD14C\uC2A4\uD2C0 \uC704\uD55C \uC874\uC7AC\uC57C."
       - 2
       Flags: 000000
@@ -4388,8 +4377,9 @@ MonoBehaviour:
       Description: 
       Languages:
       - 
-      - "\uB0B4\uC774\uB984\uC740 \uC8FC\uC778\uACF5. \uB098\uB294 \uC65C \uC8FD\uC5C8\uC744\uAE4C?
-        \uB098\uB294 \uC65C \uC774\uACF3\uC5D0 \uC788\uB294\uAC78\uAE4C?"
+      - "\uB0B4\uC774\uB984\uC740 \uC8FC\uC778\uACF5. <shake a=0.5>\uB098\uB294 \uC65C
+        \uC8FD\uC5C8\uC744\uAE4C?</shake> <size=120%><b>\uB098\uB294 \uC65C \uC774\uACF3\uC5D0
+        \uC788\uB294\uAC78\uAE4C?</b></size>"
       - 3
       Flags: 000000
       Languages_Touch: []
@@ -4398,7 +4388,7 @@ MonoBehaviour:
       Description: 
       Languages:
       - 
-      - "\uB0B4\uC774\uB984\uC740  Test. \uB098\uB294 \uB514\uBC84\uAE45 \uC6A9\uC73C\uB85C
+      - "\uB0B4\uC774\uB984\uC740 Test. \uB098\uB294 \uB514\uBC84\uAE45 \uC6A9\uC73C\uB85C
         \uD0DC\uC5B4\uB0AC\uC9C0."
       - 4
       Flags: 000000
@@ -4448,7 +4438,7 @@ MonoBehaviour:
     Google_WebServiceURL: https://script.google.com/macros/s/AKfycbyoHqcCdpr_UQcgPFWWy-P7F-cbHSNYaep0SsoAW8cX5OqgLWWKUhqm7K6cW9zT9WdNHQ/exec
     Google_SpreadsheetKey: 1KjwlNRtJ2yGDqcTErVZ0NojJPDLclgvPXbUxK9MumgE
     Google_SpreadsheetName: I2Loc Dialog
-    Google_LastUpdatedVersion: 1734455289802
+    Google_LastUpdatedVersion: 1734545439102
     Google_Password: zsam1332
     GoogleUpdateFrequency: 3
     GoogleInEditorCheckFrequency: 2
@@ -4837,7 +4827,7 @@ Transform:
   m_GameObject: {fileID: 1928787673}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.88, y: 0.124, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

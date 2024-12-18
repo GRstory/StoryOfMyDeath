@@ -1,4 +1,5 @@
 using Febucci.UI;
+using Febucci.UI.Core;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,8 @@ public class DialogUIBubble : SingletonMonobehavior<DialogUIBubble>
 {
     [SerializeField] private TMP_Text _nameText;
     [SerializeField] private TMP_Text _dialogText;
-    [SerializeField] public TypewriterByWord _dialogTextWriter;
+    [SerializeField] private TextAnimator_TMP _dialogTextAnimator;
+    [SerializeField] public TypewriterCore _dialogTextWriter;
 
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private Image _tailImage;
@@ -29,7 +31,7 @@ public class DialogUIBubble : SingletonMonobehavior<DialogUIBubble>
     private bool _isFinish = true;
     private Coroutine _finishTypingCoroutine;
 
-    public PlayableDirector CurrentDirector;
+    //public PlayableDirector CurrentDirector;
 
     protected override void Awake()
     {
@@ -42,11 +44,22 @@ public class DialogUIBubble : SingletonMonobehavior<DialogUIBubble>
         StopAllCoroutines();
         _isFinish = false;
         gameObject.SetActive(true);
+        _endImage.gameObject.SetActive(false);
 
         _dialogTextWriter.ShowText(data.Dialog);
         _nameText.text = data.Name;
         _nameText.color = data.Color;
-        _endImage.color = new Color(data.Color.r, data.Color.g, data.Color.b);
+
+        int cnt = 0;
+        if (data.Color.r < 0.35f) cnt++;
+        if (data.Color.g < 0.35f) cnt++;
+        if (data.Color.b < 0.35f) cnt++;
+
+        if(cnt > 1)
+        {
+            _endImage.color = Color.white;
+        }
+        else _endImage.color = new Color(data.Color.r, data.Color.g, data.Color.b);
 
         Resize();
         RePosition(id);
@@ -162,10 +175,6 @@ public class DialogUIBubble : SingletonMonobehavior<DialogUIBubble>
     public void OnTypingFinish()
     {
         _isFinish = true;
-        if(CurrentDirector)
-        {
-
-        }
         _finishTypingCoroutine = StartCoroutine(FinishTypingCoroutine());
     }
 

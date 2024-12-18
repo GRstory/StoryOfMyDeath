@@ -71,6 +71,7 @@ public class StandingNPC : MonoBehaviour, IInteraction, ICharacter
         {
             if (clip.asset is DialogBubbleClip dialogBubbleClip && _bubbleDataList.Count >= index)
             {
+                if (dialogBubbleClip is DialogBubbleExitClip) continue;
                 dialogBubbleClip.dynamicBubbleData = _bubbleDataList[index];
                 index++;
             }
@@ -79,7 +80,7 @@ public class StandingNPC : MonoBehaviour, IInteraction, ICharacter
 
     public void Test_PlayTimeline()
     {
-        if (_director.state == PlayState.Playing || !DialogUIBubble.Instance.IsFinish())
+        /*if (_director.state == PlayState.Playing || !DialogUIBubble.Instance.IsFinish())
         {
             double currentTime = _director.time;
             TimelineAsset timeline = _director.playableAsset as TimelineAsset;
@@ -93,6 +94,36 @@ public class StandingNPC : MonoBehaviour, IInteraction, ICharacter
         else
         {
             _director.Play();
+            _director.playableGraph.GetRootPlayable(0).SetSpeed(1);
+        }
+*/
+
+        if(_director.state != PlayState.Playing)
+        {
+            _director.Evaluate();
+            _director.Play();
+            _director.playableGraph.GetRootPlayable(0).SetSpeed(1);
+        }
+        else
+        {
+            double speed = _director.playableGraph.GetRootPlayable(0).GetSpeed();
+            bool finish = DialogUIBubble.Instance.IsFinish();
+            if (_director.playableGraph.GetRootPlayable(0).GetSpeed() != 0 || !DialogUIBubble.Instance.IsFinish())
+            {
+                double currentTime = _director.time;
+                TimelineAsset timeline = _director.playableAsset as TimelineAsset;
+
+                var track = timeline.GetRootTracks()
+                .OfType<DialogBubbleTrack>()
+                .FirstOrDefault();
+
+                DialogUIBubble.Instance._dialogTextWriter.SkipTypewriter();
+            }
+            else
+            {
+                _director.Play();
+                _director.playableGraph.GetRootPlayable(0).SetSpeed(1);
+            }
         }
     }
 }

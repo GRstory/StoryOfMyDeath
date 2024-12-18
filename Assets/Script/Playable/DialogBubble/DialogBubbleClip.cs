@@ -27,3 +27,18 @@ public class DialogBubbleClip : PlayableAsset, ITimelineClipAsset
         return playable;
     }
 }
+
+[Serializable]
+public class DialogBubbleExitClip : DialogBubbleClip
+{
+    new public DialogBubbleExitBehaviour template = new DialogBubbleExitBehaviour();
+
+    public override Playable CreatePlayable (PlayableGraph graph, GameObject owner)
+    {
+        template = new DialogBubbleExitBehaviour();
+
+        var playable = ScriptPlayable<DialogBubbleExitBehaviour>.Create (graph, template);
+        DialogBubbleExitBehaviour clone = playable.GetBehaviour();
+        return playable;
+    }
+}
