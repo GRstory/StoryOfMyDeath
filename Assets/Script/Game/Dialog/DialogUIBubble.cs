@@ -75,7 +75,7 @@ public class DialogUIBubble : SingletonMonobehavior<DialogUIBubble>
         _nameText.color = Color.black;
         _endImage.color = new Color(0f, 0f, 0f, 0.5f);
 
-        gameObject.SetActive(false);
+        _backgroundImage.gameObject.SetActive(false);
         _tailImage.gameObject.SetActive(false);
         _endImage.gameObject.SetActive(false);
     }
