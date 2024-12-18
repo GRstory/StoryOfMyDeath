@@ -6,11 +6,11 @@ public class StateBase2D
 {
     public virtual string AnimationId { get; }
 
-    public virtual void Init(ICharacter2D character) { }
+    public virtual void Init(ICharacterMovement character) { }
 
-    public virtual void Start(ICharacter2D character) { }
+    public virtual void Start(ICharacterMovement character) { }
 
-    public virtual void Update(ICharacter2D character) { }
+    public virtual void Update(ICharacterMovement character) { }
 
-    public virtual void End(ICharacter2D character) { }
+    public virtual void End(ICharacterMovement character) { }
 }

@@ -12,6 +12,6 @@ public class Scene1Controller : SceneConrollerBase
     {
         yield return new WaitForEndOfFrame();
 
-        UIManager.Instance.ChangeHUDUI<UI_Dialog>();
+        //UIManager.Instance.ChangeHUDUI<UI_Dialog>();
     }
 }
