@@ -78,7 +78,7 @@ public abstract class CharacterBase : MonoBehaviour, ICharacter, ICharacterMovem
     [SerializeField] private float _colliderYSize = 1.8f;
     [SerializeField] private float _colliderXSize = 0.5f;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         NPCManager.RegisterNPC(this, gameObject);
 

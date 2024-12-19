@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 
@@ -31,8 +32,6 @@ public class DialogUIBubble : SingletonMonobehavior<DialogUIBubble>
     private bool _isFinish = true;
     private Coroutine _finishTypingCoroutine;
 
-    //public PlayableDirector CurrentDirector;
-
     protected override void Awake()
     {
         base.Awake();
@@ -43,7 +42,7 @@ public class DialogUIBubble : SingletonMonobehavior<DialogUIBubble>
     {
         StopAllCoroutines();
         _isFinish = false;
-        gameObject.SetActive(true);
+        _backgroundImage.gameObject.SetActive(true);
         _endImage.gameObject.SetActive(false);
 
         _dialogTextWriter.ShowText(data.Dialog);
@@ -129,7 +128,6 @@ public class DialogUIBubble : SingletonMonobehavior<DialogUIBubble>
 
         screenPosition.x = Mathf.Clamp(screenPosition.x, ((_rectTransform.rect.width / 2) + _windowMargin.x), Screen.width - _rectTransform.rect.width / 2 - _windowMargin.x);
         screenPosition.y = Mathf.Clamp(screenPosition.y, ((_rectTransform.rect.height / 2) + _windowMargin.y), Screen.height - _rectTransform.rect.height / 2 - _windowMargin.y);
-
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _canvasTransform,
             screenPosition,

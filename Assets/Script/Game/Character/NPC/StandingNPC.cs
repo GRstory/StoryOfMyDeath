@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
@@ -32,6 +33,8 @@ public class StandingNPC : MonoBehaviour, IInteraction, ICharacter
     public void Interaction()
     {
         if (_director == null || _director.state == PlayState.Playing) return;
+
+        InputManagerEx.RegisterUISubmitAction(Test_PlayTimeline);
         _director.Play();
     }
 
@@ -78,7 +81,7 @@ public class StandingNPC : MonoBehaviour, IInteraction, ICharacter
         }
     }
 
-    public void Test_PlayTimeline()
+    public void Test_PlayTimeline(InputAction.CallbackContext context)
     {
         /*if (_director.state == PlayState.Playing || !DialogUIBubble.Instance.IsFinish())
         {

@@ -6,6 +6,16 @@ public class CharacterPlayer : CharacterBase
 {
     [SerializeField] private Detector _groundDetector;
 
+    private void OnEnable()
+    {
+        InputManagerEx.RegisterMoveAction(OnMove);
+    }
+
+    private void OnDisable()
+    {
+        InputManagerEx.DeregisterMoveAction(OnMove);
+    }
+
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
@@ -19,9 +29,18 @@ public class CharacterPlayer : CharacterBase
         }
     }
 
-    public void OnMove(InputValue value)
+    public void OnMove(InputAction.CallbackContext context)
     {
-        Horizontal = value.Get<Vector2>().x;
-        //Debug.Log(Horizontal);
+        Horizontal = context.ReadValue<Vector2>().x;
+    }
+
+    private void RegisterInput()
+    {
+        InputManagerEx.RegisterMoveAction(OnMove);
+    }
+
+    private void UnregisterInput()
+    {
+        InputManagerEx.DeregisterMoveAction(OnMove);
     }
 }

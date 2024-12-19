@@ -1,21 +1,67 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : SingletonMonobehavior<InputManager>
+public static class InputManagerEx
 {
-    private PlayerInput _playerInput;
+    public static @InputSystem_Actions contolAsset = new @InputSystem_Actions();
 
-    private InputAction _menuOpenAction;
-
-    protected override void Awake()
+    static InputManagerEx()
     {
-        base.Awake();
-        _playerInput = GetComponent<PlayerInput>();
-        _menuOpenAction = _playerInput?.actions["MenuOpen"];
+        contolAsset = new @InputSystem_Actions();
+        contolAsset.Enable();
     }
 
-    private void Update()
+    public static void SetPlayerInput(bool active)
     {
-        
+        if (active) contolAsset.Player.Enable();
+        else contolAsset.Player.Disable();
+    }
+
+    public static void RegisterUINavigateAction(Action<InputAction.CallbackContext> action)
+    {
+        contolAsset.UI.Navigate.performed -= action;
+        contolAsset.UI.Navigate.performed += action;
+    }
+
+    public static void DeregisterUINavigateAction(Action<InputAction.CallbackContext> action)
+    {
+        contolAsset.UI.Navigate.performed -= action;
+    }
+
+    public static void RegisterUISubmitAction(Action<InputAction.CallbackContext> action)
+    {
+        contolAsset.UI.Submit.performed -= action;
+        contolAsset.UI.Submit.performed += action;
+    }
+
+    public static void DeregisterUISubmitAction(Action<InputAction.CallbackContext> action)
+    {
+        contolAsset.UI.Submit.performed -= action;
+    }
+
+    public static void RegisterUICancleAction(Action<InputAction.CallbackContext> action)
+    {
+        contolAsset.UI.Cancel.performed -= action;
+        contolAsset.UI.Cancel.performed += action;
+    }
+
+    public static void DeregisterUICancleAction(Action<InputAction.CallbackContext> action)
+    {
+        contolAsset.UI.Cancel.performed -= action;
+    }
+
+    public static void RegisterMoveAction(Action<InputAction.CallbackContext> action)
+    {
+        contolAsset.Player.Move.performed -= action;
+        contolAsset.Player.Move.performed += action;
+        contolAsset.Player.Move.canceled -= action;
+        contolAsset.Player.Move.canceled += action;
+    }
+
+    public static void DeregisterMoveAction(Action<InputAction.CallbackContext> action)
+    {
+        contolAsset.Player.Move.performed -= action;
+        contolAsset.Player.Move.canceled -= action;
     }
 }
