@@ -1,9 +1,19 @@
+using Febucci.UI.Core;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor.Localization.Editor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using I2.Loc;
 
 public class PauseUI_Tab1 : MonoBehaviour
 {
+    [SerializeField] private TMP_Text _titleText;
+    [SerializeField] private TypewriterCore _infoWriter;
+
+    private string _defaultDisplayTitleText = "UI_Pause_Display_Title";
+    private string _defaultDisplayInfoText = "UI_Pause_Display_Info";
     private Button[,] _buttonArray = new Button[4, 4];
 
     private void Awake()
@@ -45,5 +55,19 @@ public class PauseUI_Tab1 : MonoBehaviour
     {
         _buttonArray[0, 0]?.Select();
         PauseUI.Instance._status = 1;
+    }
+
+    public void SetDisplay()
+    {
+        GameObject currentObject = EventSystem.current.currentSelectedGameObject;
+
+        _titleText.text = currentObject.name;
+        _infoWriter.ShowText(_titleText.text);
+    }
+
+    public void ResetDisplay()
+    {
+        _titleText.text = LocalizationManager.GetTranslation(_defaultDisplayTitleText);
+        _infoWriter.ShowText(LocalizationManager.GetTranslation(_defaultDisplayInfoText));
     }
 }

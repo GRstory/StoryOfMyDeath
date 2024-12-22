@@ -16,6 +16,10 @@ public class PauseUI : SingletonMonobehavior<PauseUI>
     [SerializeField] private GameObject _defaultSelectButton;
     [SerializeField] private PauseUI_Tab1 _tab1Controller;
     [SerializeField] private PauseUI_Tab2 _tab2Controller;
+
+    private Vector2 _defaultPanelPos = new Vector2(0, -430);
+    private Vector2 _settingPanelPos = new Vector2(0, 430);
+
     public int _status;
 
     private void OnEnable()
@@ -25,6 +29,9 @@ public class PauseUI : SingletonMonobehavior<PauseUI>
         InputManagerEx.RegisterUICancleAction(OnCancleAction);
 
         InputManagerEx.SetPlayerInput(false);
+
+        _tab1Controller.ResetDisplay();
+        EventSystem.current.SetSelectedGameObject(_defaultSelectButton);
     }
 
     private void OnDisable()
@@ -41,7 +48,7 @@ public class PauseUI : SingletonMonobehavior<PauseUI>
         Vector2 navigateVector = context.ReadValue<Vector2>();
 
         GameObject go = EventSystem.current.currentSelectedGameObject;
-        if(!go)
+        if (!go)
         {
             EventSystem.current.SetSelectedGameObject(_defaultSelectButton);
         }
@@ -60,7 +67,7 @@ public class PauseUI : SingletonMonobehavior<PauseUI>
         {
             next = selectable.FindSelectableOnUp();
         }
-        else if(navigateVector == Vector2.down)
+        else if (navigateVector == Vector2.down)
         {
             next = selectable.FindSelectableOnDown();
         }
@@ -103,6 +110,7 @@ public class PauseUI : SingletonMonobehavior<PauseUI>
             case 1:
                 _tab1.Select();
                 _status = 0;
+                _tab1Controller.ResetDisplay();
                 break;
             case 2:
                 _tab2.Select();
@@ -118,10 +126,16 @@ public class PauseUI : SingletonMonobehavior<PauseUI>
             case 0:
                 break;
             case 1:
+                _tab1Controller.SetDisplay();
                 break;
             case 2:
                 _tab2Controller.UpdateScroll(next);
                 break;
         }
+    }
+
+    private void SetPanelPosition()
+    {
+
     }
 }
