@@ -13,6 +13,7 @@ public class SceneManagerEx : SingletonMonobehavior<SceneManagerEx>
 
     private void OnEnable()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
